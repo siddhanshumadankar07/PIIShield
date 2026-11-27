@@ -1,26 +1,18 @@
-# PIIShield — Final Security Audit
+# PIIShield — Final Security Audit Report
 
-**Audit Date:** 2026-11-27  
-**Verdict:** **CONDITIONAL PASS** (all local security, privacy, build, lint, audit, and unit/integration checks pass; deployed HTTP headers in `public/_headers` must be verified against the live hosting provider after deployment).
+## 1. Scope & Threat Model
+- **Architecture**: 100% client-side React + TypeScript + Vite SPA. Zero backend APIs, zero external AI services, zero telemetry/analytics scripts.
+- **Assets Protected**: Raw document text, uploaded `.txt`/`.csv` files, detected PII values (Email, Phone, IPv4, PAN, Aadhaar, Credit Card), and temporary pseudonym mappings.
 
-## 1. Frontend Security
-- **XSS / DOM Injection**: **PASS** — `src/` contains zero `dangerouslySetInnerHTML`, `innerHTML`, `eval()`, or unsafe URL schemes.
-- **CSV Formula Injection**: **PASS (Fixed)** — `src/engine/csv.ts` (`escapeCSVCell`) prefixes leading `=`, `+`, `-`, `@`, `\t`, `\r` with `'`. Verified in `src/engine/csv.test.ts`.
-- **File Upload Validation**: **PASS (Fixed)** — `src/components/scanner/ScannerWorkspace.tsx` (`handleFile`) enforces `.txt`/`.csv` extensions and a 5 MB client-side size limit.
+## 2. Security Controls Verified
+1. **Zero Network Egress for PII**: Verified in `src/engine/privacy-audit.test.ts` and code inspection (`fetch`, `XMLHttpRequest`, `WebSocket`, `localStorage`, `sessionStorage`, `indexedDB` are unused across `src/`).
+2. **Shield AI Isolation (`src/engine/shieldAi.ts`)**: Deterministic local assistant receives only aggregate counts (`ShieldAISummary`), never raw text or matched PII strings.
+3. **CSV Formula Injection Neutralization (`src/engine/csv.ts`)**: Hardened `FORMULA_PREFIX_RE = /^\s*[=+\-@\t\r]/` to neutralize both direct (`=1+1`, `@SUM(...)`) and leading-whitespace (` =CMD()`) spreadsheet formula payloads on export.
+4. **File Upload Guardrails (`src/components/scanner/ScannerWorkspace.tsx`)**: Enforces `.txt`/`.csv` extension validation and a 5 MB client-side file size limit, with automated tests in `ScannerWorkspace.test.tsx`.
+5. **15-Minute Privacy Lock (`src/engine/session.ts`, `src/components/ui/SessionLock.tsx`)**: Absolute deadline rechecked via interval, `visibilitychange`, and `focus`, clearing in-memory state on expiry.
+6. **Dependency Audit**: `npm audit` executed — **0 vulnerabilities** across 246 packages.
+7. **Security Headers (`public/_headers`)**: Configured CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and HSTS for static hosting.
 
-## 2. Backend & Network Exposure
-- **PASS (Frontend-Only Architecture)**: No backend, API routes, or external AI endpoints exist. `connect-src 'none'` is configured in `public/_headers`.
-
-## 3. Privacy & Data Handling
-- **PASS**: `src/engine/privacy-audit.test.ts` verifies zero `localStorage.`, `sessionStorage.`, `indexedDB.`, `sendBeacon(`, `new XMLHttpRequest`, or Google Fonts CDN references in `src/`.
-- **PASS**: `ShieldAI` (`src/engine/shieldAi.ts`) receives only `ShieldAISummary` aggregate counts.
-- **PASS**: `AuditPassport` (`src/engine/analytics.ts`) exports metadata only.
-
-## 4. Detection & Redaction Correctness
-- **PASS**: All 6 mandatory categories (`EMAIL`, `PHONE`, `IPV4`, `PAN`, `AADHAAR`, Luhn-validated `CREDIT_CARD`) and all 3 redaction modes (`full`, `partial`, `pseudonym`) are verified in `src/engine/engine.test.ts`.
-
-## 5. Dependencies & Configuration
-- **PASS**: `npm audit` reported **0 vulnerabilities** across 234 packages. `tsconfig.app.json` has `"strict": true`.
-
-## 6. Production Deployment Headers
-- **CONDITIONAL**: `public/_headers` added with `Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Strict-Transport-Security`. Must be verified on the live HTTPS host after deployment.
+## 3. Known Limitations & Residual Risks
+- Client-side browser memory cannot prevent a compromised local browser extension or OS-level malware from reading DOM/RAM while a session is active.
+- Regex-based PII detection (e.g., Aadhaar 12-digit patterns) may still produce occasional false positives on non-PII numeric sequences, which is mitigated via human-in-the-loop Accept/Reject review.

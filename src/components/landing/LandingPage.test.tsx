@@ -7,7 +7,9 @@ describe('Phase 5 LandingPage', () => {
     const onOpenScanner = vi.fn()
     render(<LandingPage onOpenScanner={onOpenScanner} />)
 
-    expect(screen.getByText(/DETECT\./)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: /Detect\. Redact\. Protect\./ }),
+    ).toBeInTheDocument()
     expect(screen.getByText('Three deterministic stages')).toBeInTheDocument()
     expect(screen.getByText('100% Client-Side Processing')).toBeInTheDocument()
 

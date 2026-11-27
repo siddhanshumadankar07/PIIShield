@@ -61,7 +61,7 @@ export function parseCSV(text: string): ParsedCSV {
   return { delimiter, headers, rows }
 }
 
-const FORMULA_PREFIX_RE = /^[=+\-@\t\r]/
+const FORMULA_PREFIX_RE = /^\s*[=+\-@\t\r]/
 
 function escapeCSVCell(cell: string, delimiter: string): string {
   const safeCell = FORMULA_PREFIX_RE.test(cell) ? `'${cell}` : cell

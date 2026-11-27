@@ -7,7 +7,7 @@ export interface LandingPageProps {
 
 export function LandingPage({ onOpenScanner }: LandingPageProps) {
   return (
-    <div className="bg-void text-ink">
+    <main id="main-content" tabIndex={-1} className="bg-void text-ink outline-none">
       {/* Section 1: Hero */}
       <section
         aria-label="Hero"
@@ -208,6 +208,6 @@ export function LandingPage({ onOpenScanner }: LandingPageProps) {
       <footer className="border-t border-border-subtle bg-charcoal px-4 py-6 text-center font-mono text-xs text-subtle">
         PIIShield — Detect. Redact. Protect. · 100% Client-Side Privacy Intelligence
       </footer>
-    </div>
+    </main>
   )
 }

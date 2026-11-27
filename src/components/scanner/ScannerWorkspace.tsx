@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import {
   createPseudonymSession,
   createSessionDeadline,
@@ -60,14 +60,13 @@ export function ScannerWorkspace({
   const originalScrollRef = useRef<HTMLDivElement>(null)
   const sanitizedScrollRef = useRef<HTMLDivElement>(null)
   const isSyncingScroll = useRef(false)
-  const [pseudonymSession, setPseudonymSession] = useState(() => createPseudonymSession())
+  const deferredInputText = useDeferredValue(inputText)
 
   const clearAllSessionData = useCallback(() => {
     setInputText('')
     setFileName(null)
     setIsCSV(false)
     setMatches([])
-    setPseudonymSession(createPseudonymSession())
     onClearSession?.()
     setFeedback({ variant: 'info', title: 'All temporary session data cleared from memory.' })
   }, [onClearSession])
@@ -129,19 +128,20 @@ export function ScannerWorkspace({
   }
 
   const redactionResult = useMemo(() => {
-    if (!inputText) {
+    if (!deferredInputText) {
       return { sanitizedText: '', redactedCount: 0, skippedCount: 0 }
     }
+    const session = createPseudonymSession()
     if (isCSV) {
-      const csvRes = sanitizeCSV(inputText, redactionMode, pseudonymSession)
+      const csvRes = sanitizeCSV(deferredInputText, redactionMode, session)
       return {
         sanitizedText: csvRes.sanitizedCSV,
         redactedCount: csvRes.totalRedacted,
         skippedCount: matches.filter((m) => !m.accepted).length,
       }
     }
-    return redactText(inputText, matches, redactionMode, pseudonymSession)
-  }, [inputText, isCSV, matches, redactionMode, pseudonymSession])
+    return redactText(deferredInputText, matches, redactionMode, session)
+  }, [deferredInputText, isCSV, matches, redactionMode])
 
   const categoryCounts = useMemo(() => {
     const counts = new Map<PIICategory, number>()
@@ -207,7 +207,7 @@ export function ScannerWorkspace({
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main id="main-content" tabIndex={-1} className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 outline-none sm:px-6 lg:px-8">
       <PrivacyLockBar
         deadlineMs={deadlineMs}
         nowMs={nowMs}

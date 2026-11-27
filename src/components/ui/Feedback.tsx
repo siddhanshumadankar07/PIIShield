@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from './Button.tsx'
 
@@ -11,15 +11,23 @@ export interface ModalProps {
 }
 
 export function Modal({ open, title, onClose, children, footer }: ModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!open) return
+    const previousActive = document.activeElement as HTMLElement | null
+    dialogRef.current?.focus()
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      previousActive?.focus?.()
+    }
   }, [open, onClose])
 
   if (!open) return null
@@ -30,11 +38,13 @@ export function Modal({ open, title, onClose, children, footer }: ModalProps) {
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-lg border border-border-subtle bg-charcoal shadow-xl"
+        className="w-full max-w-md rounded-lg border border-border-subtle bg-charcoal shadow-xl outline-none"
       >
         <div className="flex items-center justify-between border-b border-border-subtle px-5 py-4">
           <h2 id="modal-title" className="text-base font-semibold text-ink">
@@ -111,10 +121,16 @@ export interface AlertBannerProps {
 
 export function AlertBanner({ variant, title, description, onDismiss }: AlertBannerProps) {
   const styles = {
-    info: 'border-electric/40 bg-electric/10 text-icy',
-    warning: 'border-warning/40 bg-warning/10 text-warning',
+    info: 'border-border-subtle bg-surface text-icy',
+    warning: 'border-icy/40 bg-elevated text-icy',
     success: 'border-success/40 bg-success/10 text-success',
     error: 'border-danger/40 bg-danger/10 text-danger',
+  }
+  const labels = {
+    info: '[INFO]',
+    warning: '[WARN]',
+    success: '[OK]',
+    error: '[ERR]',
   }
 
   return (
@@ -123,7 +139,10 @@ export function AlertBanner({ variant, title, description, onDismiss }: AlertBan
       className={`flex items-start justify-between gap-3 rounded-md border px-4 py-3 text-sm ${styles[variant]}`}
     >
       <div>
-        <p className="font-medium">{title}</p>
+        <p className="font-medium">
+          <span className="mr-2 font-mono text-xs font-bold">{labels[variant]}</span>
+          {title}
+        </p>
         {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
       </div>
       {onDismiss && (
