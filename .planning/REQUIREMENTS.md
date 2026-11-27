@@ -80,34 +80,34 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSGN-01 | Pending | Pending |
-| DSGN-02 | Pending | Pending |
-| DSGN-03 | Pending | Pending |
-| DSGN-04 | Pending | Pending |
-| PII-01 | Pending | Pending |
-| PII-02 | Pending | Pending |
-| PII-03 | Pending | Pending |
-| PII-04 | Pending | Pending |
-| PII-05 | Pending | Pending |
-| SCAN-01 | Pending | Pending |
-| SCAN-02 | Pending | Pending |
-| SCAN-03 | Pending | Pending |
-| SCAN-04 | Pending | Pending |
-| SCAN-05 | Pending | Pending |
-| DASH-01 | Pending | Pending |
-| DASH-02 | Pending | Pending |
-| DASH-03 | Pending | Pending |
-| PRIV-01 | Pending | Pending |
-| PRIV-02 | Pending | Pending |
-| PRIV-03 | Pending | Pending |
-| LAND-01 | Pending | Pending |
-| LAND-02 | Pending | Pending |
-| LAND-03 | Pending | Pending |
+| DSGN-01 | Phase 1 | Pending |
+| DSGN-02 | Phase 1 | Pending |
+| DSGN-03 | Phase 1 | Pending |
+| DSGN-04 | Phase 1 | Pending |
+| PII-01 | Phase 1 | Pending |
+| PII-02 | Phase 1 | Pending |
+| PII-03 | Phase 2 | Pending |
+| PII-04 | Phase 1 | Pending |
+| PII-05 | Phase 3 | Pending |
+| SCAN-01 | Phase 2 | Pending |
+| SCAN-02 | Phase 2 | Pending |
+| SCAN-03 | Phase 2 | Pending |
+| SCAN-04 | Phase 3 | Pending |
+| SCAN-05 | Phase 3 | Pending |
+| DASH-01 | Phase 4 | Pending |
+| DASH-02 | Phase 4 | Pending |
+| DASH-03 | Phase 4 | Pending |
+| PRIV-01 | Phase 2 | Pending |
+| PRIV-02 | Phase 2 | Pending |
+| PRIV-03 | Phase 2 | Pending |
+| LAND-01 | Phase 5 | Pending |
+| LAND-02 | Phase 5 | Pending |
+| LAND-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23
+- Mapped to phases: 23
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-11-27*
