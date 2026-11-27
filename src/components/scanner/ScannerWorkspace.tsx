@@ -34,7 +34,19 @@ const SYNTHETIC_SAMPLE = [
   'Card Candidate: 4532 0151 1283 0366',
 ].join('\n')
 
-export function ScannerWorkspace() {
+export interface ScannerWorkspaceProps {
+  onScanRecorded?: (detected: PIIMatch[], mode: RedactionMode) => void
+  onMatchesUpdated?: (matches: PIIMatch[]) => void
+  onModeUpdated?: (mode: RedactionMode) => void
+  onClearSession?: () => void
+}
+
+export function ScannerWorkspace({
+  onScanRecorded,
+  onMatchesUpdated,
+  onModeUpdated,
+  onClearSession,
+}: ScannerWorkspaceProps = {}) {
   const [inputText, setInputText] = useState('')
   const [fileName, setFileName] = useState<string | null>(null)
   const [isCSV, setIsCSV] = useState(false)
@@ -56,8 +68,9 @@ export function ScannerWorkspace() {
     setIsCSV(false)
     setMatches([])
     setPseudonymSession(createPseudonymSession())
+    onClearSession?.()
     setFeedback({ variant: 'info', title: 'All temporary session data cleared from memory.' })
-  }, [])
+  }, [onClearSession])
 
   // Recheck absolute deadline on interval, visibilitychange, and focus
   useEffect(() => {
@@ -93,11 +106,24 @@ export function ScannerWorkspace() {
     setIsCSV(csvMode)
     const detected = detectPII(text)
     setMatches(detected)
-  }, [deadlineMs])
+    onMatchesUpdated?.(detected)
+    if (text.trim().length > 0) {
+      onScanRecorded?.(detected, redactionMode)
+    }
+  }, [deadlineMs, onMatchesUpdated, onScanRecorded, redactionMode])
 
   const handleFile = async (file: File) => {
+    const lower = file.name.toLowerCase()
+    if (!lower.endsWith('.txt') && !lower.endsWith('.csv')) {
+      setFeedback({ variant: 'warning', title: 'Only .txt and .csv files are supported.' })
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFeedback({ variant: 'warning', title: 'File exceeds the 5 MB client-side safety limit.' })
+      return
+    }
     const content = await file.text()
-    const csvDetected = file.name.toLowerCase().endsWith('.csv')
+    const csvDetected = lower.endsWith('.csv')
     setFileName(file.name)
     runScan(content, csvDetected)
   }
@@ -141,8 +167,12 @@ export function ScannerWorkspace() {
 
   const handleCopy = async () => {
     if (!redactionResult.sanitizedText) return
-    await navigator.clipboard.writeText(redactionResult.sanitizedText)
-    setFeedback({ variant: 'success', title: 'Sanitized output copied to clipboard.' })
+    try {
+      await navigator.clipboard.writeText(redactionResult.sanitizedText)
+      setFeedback({ variant: 'success', title: 'Sanitized output copied to clipboard.' })
+    } catch {
+      setFeedback({ variant: 'warning', title: 'Clipboard access unavailable. Please download the file instead.' })
+    }
   }
 
   const handleDownload = (ext: 'txt' | 'csv') => {
@@ -161,13 +191,19 @@ export function ScannerWorkspace() {
   }
 
   const toggleMatch = (id: string) => {
-    setMatches((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, accepted: !m.accepted } : m)),
-    )
+    setMatches((prev) => {
+      const next = prev.map((m) => (m.id === id ? { ...m, accepted: !m.accepted } : m))
+      onMatchesUpdated?.(next)
+      return next
+    })
   }
 
   const setAllMatches = (accepted: boolean) => {
-    setMatches((prev) => prev.map((m) => ({ ...m, accepted })))
+    setMatches((prev) => {
+      const next = prev.map((m) => ({ ...m, accepted }))
+      onMatchesUpdated?.(next)
+      return next
+    })
   }
 
   return (
@@ -200,16 +236,19 @@ export function ScannerWorkspace() {
           const file = e.dataTransfer.files?.[0]
           if (file) void handleFile(file)
         }}
-        className={`rounded-lg border p-4 transition-colors ${
-          isDragging ? 'border-electric bg-electric/10' : 'border-border-subtle bg-charcoal'
+        className={`rounded-lg border p-5 transition-colors shadow-sm ${
+          isDragging ? 'border-icy bg-elevated' : 'border-border-subtle bg-charcoal'
         }`}
       >
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-4">
           <div>
-            <h1 className="font-display text-2xl tracking-wide uppercase text-ink">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-subtle">
+              Local Sanitization Workspace
+            </p>
+            <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight text-ink">
               Scanner Workspace
             </h1>
-            <p className="text-xs text-muted">
+            <p className="mt-1 text-xs text-muted">
               100% local processing. No uploads, no persistent storage.
               {fileName ? ` Loaded: ${fileName}` : ''}
             </p>
@@ -236,17 +275,17 @@ export function ScannerWorkspace() {
           </div>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="grid gap-5 lg:grid-cols-12">
+          <div className="lg:col-span-7">
             <Textarea
               label="Paste or type text to scan"
               placeholder="Paste logs, support tickets, or text here..."
               value={inputText}
               onChange={(e) => runScan(e.target.value, isCSV)}
-              rows={6}
+              rows={7}
             />
           </div>
-          <div className="flex flex-col justify-between gap-4">
+          <div className="flex flex-col justify-between gap-4 rounded-md border border-border-subtle bg-surface p-4 lg:col-span-5">
             <FileUpload
               label="Upload TXT or CSV"
               accept=".txt,.csv"
@@ -259,7 +298,11 @@ export function ScannerWorkspace() {
             <Select
               label="Redaction Mode"
               value={redactionMode}
-              onChange={(e) => setRedactionMode(e.target.value as RedactionMode)}
+              onChange={(e) => {
+                const nextMode = e.target.value as RedactionMode
+                setRedactionMode(nextMode)
+                onModeUpdated?.(nextMode)
+              }}
               options={[
                 { value: 'full', label: 'Full Mask ([REDACTED])' },
                 { value: 'partial', label: 'Partial Mask' },

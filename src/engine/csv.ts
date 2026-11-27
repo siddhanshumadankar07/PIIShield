@@ -61,11 +61,14 @@ export function parseCSV(text: string): ParsedCSV {
   return { delimiter, headers, rows }
 }
 
+const FORMULA_PREFIX_RE = /^[=+\-@\t\r]/
+
 function escapeCSVCell(cell: string, delimiter: string): string {
-  if (cell.includes('"') || cell.includes(delimiter) || cell.includes('\n')) {
-    return `"${cell.replace(/"/g, '""')}"`
+  const safeCell = FORMULA_PREFIX_RE.test(cell) ? `'${cell}` : cell
+  if (safeCell.includes('"') || safeCell.includes(delimiter) || safeCell.includes('\n')) {
+    return `"${safeCell.replace(/"/g, '""')}"`
   }
-  return cell
+  return safeCell
 }
 
 export function serializeCSV(
@@ -119,3 +122,4 @@ export function sanitizeCSV(
     totalRedacted,
   }
 }
+

@@ -41,13 +41,15 @@ export function DocumentPanel({
   emptyDescription = 'Paste text or upload a TXT/CSV file to begin local analysis.',
   children,
 }: DocumentPanelProps) {
-  const accentBorder =
-    variant === 'sanitized' ? 'border-electric/40' : 'border-border-subtle'
+  const surfaceTone =
+    variant === 'sanitized'
+      ? 'border-border-subtle bg-surface'
+      : 'border-border-subtle bg-charcoal'
 
   return (
     <section
       aria-label={title}
-      className={`flex flex-col overflow-hidden rounded-lg border bg-charcoal ${accentBorder}`}
+      className={`flex flex-col overflow-hidden rounded-lg border shadow-sm ${surfaceTone}`}
     >
       <DocumentToolbar title={title} badge={badge} actions={actions} />
       <div className="min-h-56 flex-1 p-4">

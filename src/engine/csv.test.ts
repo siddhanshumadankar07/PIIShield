@@ -15,4 +15,11 @@ describe('CSV Processing Engine (Synthetic Data)', () => {
     expect(res.totalRedacted).toBe(1)
     expect(res.sanitizedCSV).toContain('Mercer, Alex;[REDACTED];"VIP; internal"')
   })
+
+  it('neutralizes CSV formula injection prefixes on export', () => {
+    const csv = 'user,note\nalpha,=1+1\nbeta,@SUM(A1:A2)'
+    const res = sanitizeCSV(csv, 'full', createPseudonymSession())
+    expect(res.sanitizedCSV).toContain("alpha,'=1+1")
+    expect(res.sanitizedCSV).toContain("beta,'@SUM(A1:A2)")
+  })
 })

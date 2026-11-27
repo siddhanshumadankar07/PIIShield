@@ -6,12 +6,12 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation, Design System & Core PII Engine** — Tailwind CSS + self-hosted typography + Deep Black × Electric Blue tokens + UI-independent PII detection & redaction engine
-- [ ] **Phase 2: Scanner Workspace & Privacy X-Ray** — Text/TXT/drag-drop input, human review controls, Privacy X-Ray, synchronized before/after comparison, and 15-minute Privacy Lock
-- [ ] **Phase 3: CSV Processing, Custom Rules & Web Worker Scaling** — Quoted/delimiter-preserving CSV pipeline, column-level review, ReDoS-safe custom rules, and non-blocking large-file scans
-- [ ] **Phase 4: Privacy Command Center & Audit Passport** — Session dashboard, metadata-only activity history, transparent exposure analysis, and downloadable Audit Passport
-- [ ] **Phase 5: Editorial Landing Page & 3D Hero** — 7-section editorial landing page with <300 KB pre-rendered 3D visual, isolated from scanner route
-- [ ] **Phase 6: Final Verification & Quality Gates** — End-to-end functional, privacy/storage/network isolation, WCAG 2.2 AA accessibility, and Lighthouse >= 90 performance verification
+- [x] **Phase 1: Foundation, Design System & Core PII Engine** — Tailwind CSS + self-hosted typography + Deep Black × Electric Blue tokens + UI-independent PII detection & redaction engine
+- [x] **Phase 2: Scanner Workspace & Privacy X-Ray** — Text/TXT/drag-drop input, human review controls, Privacy X-Ray, synchronized before/after comparison, and 15-minute Privacy Lock
+- [x] **Phase 3: CSV Processing, Custom Rules & Web Worker Scaling** — Quoted/delimiter-preserving CSV pipeline, column-level review, ReDoS-safe custom rules, and non-blocking large-file scans
+- [x] **Phase 4: Privacy Command Center & Audit Passport** — Session dashboard, metadata-only activity history, transparent exposure analysis, and downloadable Audit Passport
+- [x] **Phase 5: Editorial Landing Page & 3D Hero** — 7-section editorial landing page with <300 KB pre-rendered 3D visual, isolated from scanner route
+- [x] **Phase 6: Final Verification & Quality Gates** — End-to-end functional, privacy/storage/network isolation, WCAG 2.2 AA accessibility, and Lighthouse >= 90 performance verification
 
 ## Phase Details
 
@@ -75,3 +75,4 @@
 
 ---
 *Roadmap created: 2026-11-27*
+

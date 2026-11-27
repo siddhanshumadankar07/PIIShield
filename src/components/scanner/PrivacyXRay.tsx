@@ -34,10 +34,10 @@ export function PrivacyXRay({ text, matches }: PrivacyXRayProps) {
       <mark
         key={match.id}
         aria-label={`${match.category} detected: ${match.accepted ? 'accepted for redaction' : 'rejected'}`}
-        className={`inline rounded px-1 py-0.5 font-mono text-xs underline decoration-2 underline-offset-2 ${
+        className={`inline rounded border px-1 py-0.5 font-mono text-xs underline decoration-2 underline-offset-2 ${
           match.accepted
-            ? 'bg-electric/20 text-icy decoration-icy'
-            : 'bg-surface text-muted line-through decoration-muted'
+            ? 'border-border-subtle bg-elevated text-ink decoration-icy'
+            : 'border-transparent bg-charcoal text-muted line-through decoration-muted'
         }`}
       >
         <span className="mr-1 font-bold">[{tag}]</span>
@@ -57,3 +57,4 @@ export function PrivacyXRay({ text, matches }: PrivacyXRayProps) {
     </pre>
   )
 }
+

@@ -17,8 +17,8 @@ const CATEGORY_LABELS: Record<PIICategory, { short: string; name: string }> = {
 export function CategoryBadge({ category }: CategoryBadgeProps) {
   const info = CATEGORY_LABELS[category]
   return (
-    <span className="inline-flex items-center gap-1.5 rounded border border-electric/40 bg-electric/10 px-2 py-0.5 font-mono text-xs text-icy">
-      <span className="font-bold underline decoration-icy/60 underline-offset-2">
+    <span className="inline-flex items-center gap-1.5 rounded border border-border-subtle bg-elevated px-2 py-0.5 font-mono text-xs text-icy">
+      <span className="font-semibold underline decoration-electric/70 underline-offset-2">
         [{info.short}]
       </span>
       <span>{info.name}</span>

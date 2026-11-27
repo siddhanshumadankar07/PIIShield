@@ -37,7 +37,7 @@ describe('Phase 3 ScannerWorkspace', () => {
     expect(screen.getAllByText(/EMAIL_01/).length).toBeGreaterThan(0)
   })
 
-  it('copies sanitized output to clipboard', () => {
+  it('copies sanitized output to clipboard', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
     Object.assign(navigator, { clipboard: { writeText } })
 
@@ -46,5 +46,6 @@ describe('Phase 3 ScannerWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Copy' }))
 
     expect(writeText).toHaveBeenCalledTimes(1)
+    expect(await screen.findByText('Sanitized output copied to clipboard.')).toBeInTheDocument()
   })
 })

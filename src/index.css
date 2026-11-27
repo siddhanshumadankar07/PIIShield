@@ -1,21 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-void: #06070A;
-  --color-charcoal: #0F1117;
-  --color-surface: #151821;
-  --color-elevated: #1C202B;
-  --color-ink: #F8FAFC;
-  --color-muted: #94A3B8;
-  --color-electric: #2563EB;
-  --color-electric-hover: #1D4ED8;
-  --color-icy: #7DD3FC;
-  --color-border-subtle: #232733;
+  --color-void: #111315;
+  --color-charcoal: #181B1F;
+  --color-surface: #202429;
+  --color-elevated: #272C32;
+  --color-border-subtle: #343A42;
+  --color-ink: #F1F3F5;
+  --color-muted: #A0A7B0;
+  --color-subtle: #737C87;
+  --color-electric: #BFC7D1;
+  --color-electric-hover: #D9E0E8;
+  --color-icy: #D9E0E8;
   --color-danger: #EF4444;
-  --color-warning: #F59E0B;
+  --color-warning: #BFC7D1;
   --color-success: #10B981;
 
-  --font-display: 'Barlow Condensed', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
@@ -30,6 +31,49 @@
 *:focus-visible {
   outline: 2px solid var(--color-icy);
   outline-offset: 2px;
+}
+
+@keyframes warrior-float {
+  0%,
+  100% {
+    transform: translate3d(0px, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0px, -8px, 0);
+  }
+}
+
+@keyframes subtle-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-warrior-float {
+  animation: warrior-float 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-fade-in {
+  animation: subtle-fade-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.bg-electric-atmosphere {
+  background:
+    radial-gradient(ellipse 70% 55% at 72% 38%, rgba(191, 199, 209, 0.08) 0%, rgba(115, 124, 135, 0.03) 48%, transparent 78%),
+    linear-gradient(180deg, #16191D 0%, #111315 65%, #0D0F11 100%);
+}
+
+.bg-tech-grid {
+  background-image:
+    linear-gradient(to right, rgba(217, 224, 232, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 224, 232, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -116,12 +116,15 @@ export function PrivacyCommandCenter({
       )}
 
       <section aria-label="Session Overview" className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-4">
           <div>
-            <h1 className="font-display text-2xl uppercase tracking-wide text-ink">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-subtle">
+              Governance &amp; Audit Passport
+            </p>
+            <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight text-ink">
               Privacy Command Center
             </h1>
-            <p className="text-xs text-muted">
+            <p className="mt-1 text-xs text-muted">
               Metadata-only session telemetry. Cleared automatically on Privacy Lock expiry.
             </p>
           </div>

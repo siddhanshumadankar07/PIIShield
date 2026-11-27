@@ -28,10 +28,10 @@ export function Navbar({ items, activeId, onNavigate, rightSlot }: NavbarProps) 
             }}
             className="flex items-center gap-2.5 text-ink no-underline"
           >
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded border border-electric/60 bg-electric/15 font-mono text-xs font-bold text-icy">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded border border-border-subtle bg-surface font-mono text-xs font-semibold text-icy">
               PS
             </span>
-            <span className="font-display text-xl tracking-wider uppercase">
+            <span className="font-display text-lg font-semibold tracking-tight text-ink">
               PIIShield
             </span>
           </a>
@@ -45,13 +45,19 @@ export function Navbar({ items, activeId, onNavigate, rightSlot }: NavbarProps) 
                   type="button"
                   aria-current={isActive ? 'page' : undefined}
                   onClick={() => onNavigate(item.id)}
-                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                  className={`relative rounded-md px-3.5 py-2 text-sm font-medium transition-colors duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-electric/15 text-icy border border-electric/40'
-                      : 'text-muted hover:text-ink hover:bg-surface border border-transparent'
+                      ? 'bg-elevated text-ink border border-border-subtle'
+                      : 'text-muted hover:text-ink hover:bg-charcoal border border-transparent'
                   }`}
                 >
                   {item.label}
+                  {isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-3 -bottom-[1px] h-[2px] rounded-full bg-icy"
+                    />
+                  )}
                 </button>
               )
             })}
@@ -66,7 +72,7 @@ export function Navbar({ items, activeId, onNavigate, rightSlot }: NavbarProps) 
             aria-controls="mobile-nav-menu"
             aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
             onClick={() => setMobileOpen((prev) => !prev)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border-subtle bg-charcoal text-ink md:hidden cursor-pointer"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border-subtle bg-surface text-ink md:hidden cursor-pointer"
           >
             <span className="font-mono text-xs">{mobileOpen ? '✕' : '≡'}</span>
           </button>
@@ -93,7 +99,7 @@ export function Navbar({ items, activeId, onNavigate, rightSlot }: NavbarProps) 
                   }}
                   className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium cursor-pointer ${
                     isActive
-                      ? 'bg-electric/15 text-icy border border-electric/40'
+                      ? 'bg-elevated text-ink border border-border-subtle'
                       : 'text-muted hover:text-ink hover:bg-surface border border-transparent'
                   }`}
                 >
@@ -107,4 +113,3 @@ export function Navbar({ items, activeId, onNavigate, rightSlot }: NavbarProps) 
     </header>
   )
 }
-

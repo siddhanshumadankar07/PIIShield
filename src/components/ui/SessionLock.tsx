@@ -21,8 +21,8 @@ export function PrivacyLockBar({
   const formatted = formatCountdown(session.remainingMs)
 
   const statusStyles = {
-    active: 'border-electric/40 bg-electric/10 text-icy',
-    warning: 'border-warning/50 bg-warning/15 text-warning',
+    active: 'border-border-subtle bg-elevated text-icy',
+    warning: 'border-icy/50 bg-elevated text-icy',
     expired: 'border-danger/50 bg-danger/15 text-danger',
   }
 
